@@ -24,6 +24,8 @@ class UrlRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('u')
             ->andWhere('u.url = :val')
             ->setParameter('val', $value)
+            ->orderBy('u.createdDate', 'DESC')
+            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
             ;
@@ -34,6 +36,7 @@ class UrlRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('u')
             ->andWhere('u.hash = :val')
             ->setParameter('val', $value)
+            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
         ;

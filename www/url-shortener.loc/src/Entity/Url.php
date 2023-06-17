@@ -10,6 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Url
 {
+    private int $lifetimeInSeconds = 5;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -78,5 +80,14 @@ class Url
         $this->createdDate = $createdDate;
 
         return $this;
+    }
+
+    public function isActive(): bool
+    {
+        $now = new \DateTimeImmutable();
+
+        $diff = $now->getTimestamp() - $this->getCreatedDate()->getTimestamp();
+
+        return $diff < $this->lifetimeInSeconds;
     }
 }

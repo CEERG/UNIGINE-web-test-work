@@ -20,7 +20,7 @@ class UrlDomain {
     {
         $url = $this->urlRepository->findOneByUrl($urlString);
 
-        if ($url)
+        if ($url && $url->isActive())
             return $url->getHash();
 
         $url = new Url();
@@ -36,7 +36,7 @@ class UrlDomain {
     {
         $url = $this->urlRepository->findOneByHash($hash);
 
-        if (!$url)
+        if (!$url || !$url->isActive())
             return null;
 
         return $url->getUrl();
