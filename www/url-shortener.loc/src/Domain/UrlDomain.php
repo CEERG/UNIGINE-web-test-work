@@ -18,6 +18,11 @@ class UrlDomain {
 
     public function encodeUrl(string $urlString): string
     {
+        $url = $this->urlRepository->findOneByUrl($urlString);
+
+        if ($url)
+            return $url->getHash();
+
         $url = new Url();
         $url->setUrl($urlString);
 

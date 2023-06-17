@@ -19,6 +19,16 @@ class UrlRepository extends ServiceEntityRepository
         parent::__construct($registry, Url::class);
     }
 
+    public function findOneByUrl(string $value): ?Url
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.url = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
+
     public function findOneByHash(string $value): ?Url
     {
         return $this->createQueryBuilder('u')
