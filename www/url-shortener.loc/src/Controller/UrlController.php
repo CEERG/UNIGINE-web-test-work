@@ -7,11 +7,14 @@ use App\Entity\Url;
 use App\Repository\UrlRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class UrlController extends AbstractController
 {
+    const ERROR_NON_EXISTENT_HASH = "Non-existent hash.";
+
     private function getUrlDomain(): UrlDomain
     {
         $entityManager = $this->getDoctrine()->getManager();
@@ -46,11 +49,29 @@ class UrlController extends AbstractController
 
         if (!$url)
             return $this->json([
-                'error' => 'Non-existent hash.'
+                'error' => self::ERROR_NON_EXISTENT_HASH
             ]);
 
         return $this->json([
             'url' => $url
         ]);
+    }
+
+    /**
+     * @Route("/redirect-by-hash", name="redirect_by_hash")
+     * @return RedirectResponse | JsonResponse
+     */
+    public function redirectByHash(Request $request)
+    {
+        $hash = $request->get('hash');
+
+        $url = $this->getUrlDomain()->decodeUrl($hash);
+
+        if (!$url)
+            return $this->json([
+                'error' => self::ERROR_NON_EXISTENT_HASH
+            ]);
+
+        return $this->redirect($url);
     }
 }
